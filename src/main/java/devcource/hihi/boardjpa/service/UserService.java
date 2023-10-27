@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -19,12 +20,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
+    @Transactional(readOnly = true)
     public Page<User> getUsers(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return userRepository.findAll(pageable);
     }
 
+    @Transactional
     public ResponseUserDto createUser(CreateUserRequestDto userDto) {
         User user = userDto.toEntity();
         User savedUser = userRepository.save(user);
